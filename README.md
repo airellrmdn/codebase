@@ -48,7 +48,7 @@ Branch list:
 
 - master `default production branch` (<b>locked for push<b/>)
 - release `testing branch form staging to production`
-- develop `development branch`
+- develop `development branch` (<b>locked for push<b/>)
 - staging `staging release branch`
 - feature `new feature branch, pull from development`
 - bugfix `bugfix branch, pull from development`
