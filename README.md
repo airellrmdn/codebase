@@ -1,92 +1,218 @@
-# Codebase
+# GIT
 
+<br>
 
+## Table of Contents GIT
 
-## Getting started
+- [GIT](#)
+  - [Basic Rules](#basic-rules)
+  - [Branching](#branching)
+  - [Commits](#commits)
+  - [Code Reviews](#code-reviews)
+  - [Merge](#merge)
+  - [Rebase](#rebase)
+  - [Squash Commits](#squash-commits)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+---
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+<br>
 
-## Add your files
+## Basic Rules
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+<b>Konfigurasi commit authorship</b><br>
+Atur username dan email kamu dengan benar saat menggunakan Git. Informasi ini akan dilampirkan ke setiap `commit` yang kamu buat.
+
+```bash
+
+git config --global user.name "John Doe"
+
+git config --global user.email "john@example.com"
 
 ```
-cd existing_repo
-git remote add origin http://172.17.62.59:8929/scnhub/codebase.git
-git branch -M master
-git push -uf origin master
+
+Dengan cara ini rekan developer lain akan mudah menemukan kamu jika mereka memiliki pertanyaan tentang perubahan terkait `commit` milik kamu.
+
+<br>
+
+## Branching
+
+```bash
+git checkout -b branch_name/sub_name
 ```
 
-## Integrate with your tools
+**Development**: **_harus melalui pull request / jangan direct push/merge ke branch ini_**.
+Setiap aggota tim harus mengerjakan task-nya pada branch yang terpisah dari upstream_branch. Hal ini akan memudahkan kamu dalam membuat perubahan tanpa mempengaruhi branch utama.
+Ketika task yang dikerjakan dirasa sudah selesai, kamu dapat melakukan merge melalui pull request terlebih dahulu ke branch utama.
 
-- [ ] [Set up project integrations](http://172.17.62.59:8929/scnhub/codebase/-/settings/integrations)
+Branch list:
 
-## Collaborate with your team
+- master `default production branch` (<b>locked for push<b/>)
+- release `testing branch form staging to production`
+- develop `development branch`
+- staging `staging release branch`
+- feature `new feature branch, pull from development`
+- bugfix `bugfix branch, pull from development`
+- hotfix `hotfix error production, pull from production`
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+List all the available branches
 
-## Test and Deploy
+```bash
+git branch -a
+```
 
-Use the built-in continuous integration in GitLab.
+Create New Branch
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```bash
+git checkout -b <branch_name> <upstream_branch>
+```
 
-***
+<b>Example usage</b>
 
-# Editing this README
+bugfix
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+```bash
+git checkout -b bugfix/[SUBTASK-ID] Development
+```
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+hotfix
 
-## Name
-Choose a self-explaining name for your project.
+```bash
+git checkout -b hotfix/[SUBTASK-ID] Development
+```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+feature
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+```bash
+git checkout -b feature/[SUBTASK-ID] Development
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+release
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+```bash
+git checkout -b release/[VERSIONING] Development
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+Format versioning x.y.z <br>
+x == major version<br>
+y == minor version<br>
+z == patch version<br>
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+<br>
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+## Commits
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Commit Messages sangat penting untuk memahami apa yang telah kamu kerjakan pada commit tersebut. Jadi luangkan waktu untuk menulis commit yang singkat tapi terperinci dan bermakna. `jangan lupa untuk menyematkan link task/story JIRA ya..`
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+## Structure commit message
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+```text
+[section head of title]
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+[section dectription / summary]
 
-## License
-For open source projects, say how it is licensed.
+[section taklist / substask]
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+[section link task / story]
+```
+
+## Example commit message
+
+```text
+Feature Banner slider API
+
+  Added the Absorb Banner Slider feature for frontend usage needs
+   - add model or repository Banner
+   - add controller crud Banner
+   - add serialize & validator Banner
+
+   https://telkomdds.atlassian.net/browse/SCAN-1362
+```
+
+<br>
+
+## Code Reviews
+
+Ketika kamu melakukan `Pull Request`, untuk memastikan kualitas kode kamu wajib menyematkan reviewer. Review koding dilakukan agar kode yang kita buat bisa dinyatakan efektif. Meminta review juga memastikan bebrapa baris kode kamu tidak mengandung implikasi keamanan dan lain-lain.
+
+<br>
+
+## Merge
+
+Merge dilakukan untuk menyatukan 2 branch dalam satu commit. Proses merge branch sebaiknya hanya di lakukan melalui pull request dan hanya menuju `upstream branch` atau branch diatasnya. Jika kita membuat branch baru atau mengupdate commit terakhir dengan referensi upstream branch (development), maka tidak boleh melakukan merge karena proses ini akan membuat node commit baru dan akan bermasalah dikemudian hari jika terjadi conflict dll. Proses yang harus dilakukan yaitu melalui prosedur `rebase`.
+
+<br>
+
+## Rebase
+
+Kamu harus sering me-rebase branch milik kamu, untuk menghindari konflik dan kerja dua kali. berikut perintah untuk melakukan rebase:
+
+```bash
+git checkout <upstream_branch>
+
+git pull
+
+git checkout <your_branch>
+
+git rebase <upstream_branch>
+```
+
+<br>
+
+## Squash Commits
+
+Pada saat mengerjakan task di branch milik kamu, sangat dimungkinkan untuk menambahkan komit sekecil apapun. Namunm jika setiap branch memiliki banyak commit, jumlah commit di branch utama seperti development, staging dll juga akan memiliki beban commit yang jumlahnya sama. Sebaiknya hanya ada satu commit dari setiab branch yang akan di merge ke branch utama.
+
+Dalam proses ini, Kamu akan mengambil semua commit dengan perintah git rebase dengan flag i dan menyatukannya dengan squash. Selain menyederhanakan commit, perintah ini juga memungkinkan Anda untuk menghapus commit, menulis ulang pesan komit, dan menambahkan file baru.
+
+**See ~N Commit**
+
+```bash
+git log --graph --oneline --decorate
+```
+
+Berikut adalah command squash, N adalah jumlah commits yang akan digabung menggunakan rebase:
+
+```bash
+git rebase -i HEAD~[N]
+```
+
+menjadi seperti ini:
+
+```bash
+git rebase -i HEAD~4
+```
+
+Setelah command tersebut, GIT akan memulai rebase dengan default editor (Vim editor):
+
+```bash
+pick c407062 Commit first commit
+pick 383474d Commit Added css resets
+pick b45h6js Commit third commit
+pick kl3938n Commit Major commit
+```
+
+kamu dapat mengubah pick commit baris kedua dan seterusnya menjadi s atau squash, ini akan menyatukan beberapa commit menjadi satu.
+
+```bash
+pick c407062 Commit first commit
+s 383474d Commit Added css resets
+s b45h6js Commit third commit
+s kl3938n Commit Major commit
+```
+
+jika sudah mengubah commit menjadi squash, silahkan tekan tombol escape dan ketik `:wq` untuk melanjutkan proses rebase, kemudian langkah selanjutnya adalah menyatukan commit message.
+
+Pada editor commit message silahkan anda memilah, mengedit dan menghapus message jika diperlukan. Ketik `:wq` untuk melanjutkan proses rebase.
+
+Berikut list command pada fitur rebase
+
+```bash
+Continue with the changes that you made.
+  git rebase --continue
+
+Skips the changes
+  git rebase --skip
+
+Abort rebase
+  git rebase --abort
+```
